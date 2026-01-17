@@ -1,0 +1,38 @@
+{
+  "name": "telegram-video-bot",
+  "version": "1.0.0",
+  "description": "Telegram Bot for parsing video links from X, Facebook, TikTok, Instagram and sending to Aria2",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "video",
+    "downloader",
+    "aria2"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "aria2": "^4.1.2",
+    "dotenv": "^16.4.7",
+    "https-proxy-agent": "^7.0.6",
+    "socks-proxy-agent": "^8.0.5",
+    "telegraf": "^4.16.3",
+    "yt-dlp-wrap": "^2.3.12",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
