@@ -83,8 +83,11 @@ export async function parseTwitter(url: string): Promise<TwitterParseResult> {
         return u;
       });
 
-    const title = data.text 
-      ? `${data.user_name}: ${data.text.substring(0, 50)}${data.text.length > 50 ? '...' : ''}`
+    // Clean up tweet text by removing newlines and extra spaces
+    const cleanedTweetText = data.text ? data.text.replace(/\s+/g, ' ').trim() : '';
+    
+    const title = cleanedTweetText
+      ? `${data.user_name}: ${cleanedTweetText.substring(0, 50)}${cleanedTweetText.length > 50 ? '...' : ''}`
       : `@${data.user_screen_name} 的推文`;
 
     if (videoUrls.length > 0) {

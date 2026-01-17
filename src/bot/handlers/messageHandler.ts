@@ -157,11 +157,11 @@ async function handleMediaResult(
     const videoCount = media.videoUrls?.length || 0;
     const imageCount = media.imageUrls?.length || 0;
     if (videoCount > 0 && imageCount > 0) {
-      return `🎬(${videoCount}) + 🖼️(${imageCount})`;
+      return `🎬( ${videoCount} ) + 🖼️( ${imageCount} )`;
     } else if (videoCount > 0) {
-      return `🎬(${videoCount})`;
+      return `🎬( ${videoCount} )`;
     } else if (imageCount > 0) {
-      return `🖼️(${imageCount})`;
+      return `🖼️( ${imageCount} )`;
     }
     return '';
   };

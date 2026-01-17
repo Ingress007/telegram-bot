@@ -126,7 +126,8 @@ async function handleDownload(ctx: CallbackContext, userId: number, mediaKey: st
 
   // Generate filename - preserve original extension if present
   const safeTitle = media.title
-    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/\s+/g, '')  // Replace all whitespace (spaces, tabs, newlines) with underscores
+    .replace(/[<>:"/\\|?*]/g, '')  // Replace other illegal characters
     .substring(0, 100);
   
   // Check if title already has extension
@@ -173,7 +174,8 @@ async function handleBatchDownload(ctx: CallbackContext, userId: number, mediaKe
   await ctx.answerCbQuery('正在批量发送到 Aria2...');
 
   const safeTitle = media.title
-    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/\s+/g, '')  // Replace all whitespace (spaces, tabs, newlines) with underscores
+    .replace(/[<>:"/\\|?*]/g, '')  // Replace other illegal characters
     .substring(0, 80);
 
   const results: { success: boolean; gid?: string; type: string; index: number; error?: string }[] = [];
@@ -241,14 +243,14 @@ async function handleBatchDownload(ctx: CallbackContext, userId: number, mediaKe
     const imageCount = results.filter(r => r.type === 'image').length;
     
     let summary = '';
-    if (videoCount > 0) summary += `🎬 ${videoCount} 个视频`;
+    if (videoCount > 0) summary += `🎬 (${videoCount})`;
     if (videoCount > 0 && imageCount > 0) summary += '，';
-    if (imageCount > 0) summary += `🖼 ${imageCount} 张图片`;
+    if (imageCount > 0) summary += `🖼 (${imageCount})`;
     
     await ctx.reply(
       `✅ 已批量发送到 Aria2\n\n` +
       `${summary}\n` +
-      `📁 文件名前缀: ${safeTitle}\n` +
+      `📁 文件名: ${safeTitle}\n` +
       `🆔 任务 IDs: ${gids}`
     );
   } else if (successCount > 0) {
