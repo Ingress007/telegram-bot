@@ -23,7 +23,7 @@ interface MediaGroupItem {
   url?: string;
 }
 
-// Buffer for collecting media group items
+// Buffer for collecting media group items // 用于收集媒体组项目的缓冲区 // 用于收集媒体组项目的缓冲区
 const mediaGroupBuffer = new Map<string, {
   items: MediaGroupItem[];
   timer: NodeJS.Timeout;
@@ -31,9 +31,10 @@ const mediaGroupBuffer = new Map<string, {
   messageId: number;
 }>();
 
-const MEDIA_GROUP_DELAY = 500; // ms to wait for all media group items
+const MEDIA_GROUP_DELAY = 500; // ms to wait for all media group items // 毫秒，等待所有媒体组项目 // 毫秒，等待所有媒体组项目
 
 /**
+ * 处理Telegram照片消息
  * Handle Telegram photo message
  */
 export async function handleTelegramPhoto(ctx: PhotoContext): Promise<void> {
@@ -79,6 +80,7 @@ export async function handleTelegramPhoto(ctx: PhotoContext): Promise<void> {
 }
 
 /**
+ * 处理Telegram视频消息
  * Handle Telegram video message
  */
 export async function handleTelegramVideo(ctx: VideoContext): Promise<void> {
@@ -122,6 +124,7 @@ export async function handleTelegramVideo(ctx: VideoContext): Promise<void> {
 }
 
 /**
+ * 处理Telegram文档消息
  * Handle Telegram document message
  */
 export async function handleTelegramDocument(ctx: DocumentContext): Promise<void> {
@@ -164,6 +167,7 @@ export async function handleTelegramDocument(ctx: DocumentContext): Promise<void
 }
 
 /**
+ * 缓冲媒体组项目并在延迟后处理
  * Buffer media group item and process after delay
  */
 async function bufferMediaGroupItem(
@@ -176,17 +180,17 @@ async function bufferMediaGroupItem(
   const existing = mediaGroupBuffer.get(mediaGroupId);
   
   if (existing) {
-    // Add to existing buffer
+    // Add to existing buffer // 添加到现有缓冲区
     existing.items.push(item);
-    existing.messageId = messageId; // Update to latest message
+    existing.messageId = messageId; // Update to latest message // 更新为最新消息
     
-    // Reset timer
+    // Reset timer // 重置定时器
     clearTimeout(existing.timer);
     existing.timer = setTimeout(() => {
       processMediaGroup(ctx, mediaGroupId);
     }, MEDIA_GROUP_DELAY);
   } else {
-    // Create new buffer
+    // Create new buffer // 创建新缓冲区
     const timer = setTimeout(() => {
       processMediaGroup(ctx, mediaGroupId);
     }, MEDIA_GROUP_DELAY);
@@ -201,6 +205,7 @@ async function bufferMediaGroupItem(
 }
 
 /**
+ * 处理缓冲的媒体组
  * Process buffered media group
  */
 async function processMediaGroup(ctx: Context, mediaGroupId: string): Promise<void> {
@@ -211,7 +216,7 @@ async function processMediaGroup(ctx: Context, mediaGroupId: string): Promise<vo
   
   const { items, userId, messageId } = group;
   
-  // Get download URLs for all items
+  // Get download URLs for all items // 获取所有项目的下载URL
   const urls: string[] = [];
   const fileNames: string[] = [];
   let hasPhotos = false;
@@ -234,7 +239,7 @@ async function processMediaGroup(ctx: Context, mediaGroupId: string): Promise<vo
     return;
   }
   
-  // Determine type
+  // Determine type // 确定类型
   let type: 'images' | 'videos' | 'mixed';
   if (hasPhotos && hasVideos) {
     type = 'mixed';
@@ -244,7 +249,7 @@ async function processMediaGroup(ctx: Context, mediaGroupId: string): Promise<vo
     type = 'images';
   }
   
-  // Generate media count text
+  // Generate media count text // 生成媒体计数文本
   const photoCount = items.filter(i => i.type === 'photo').length;
   const videoCount = items.filter(i => i.type === 'video').length;
   let countText = '';
@@ -256,7 +261,7 @@ async function processMediaGroup(ctx: Context, mediaGroupId: string): Promise<vo
     countText = `🖼️(${photoCount})`;
   }
   
-  // Store and send button
+  // Store and send button // 存储并发送按钮
   const mediaKey = storePendingMedia(userId, {
     url: urls[0],
     directUrl: urls[0],
@@ -277,6 +282,7 @@ async function processMediaGroup(ctx: Context, mediaGroupId: string): Promise<vo
 }
 
 /**
+ * 发送单个媒体的下载按钮
  * Send download button for single media
  */
 async function sendDownloadButton(
@@ -291,7 +297,8 @@ async function sendDownloadButton(
     ? [[Markup.button.callback('发送到Aria2下载', `download:${mediaKey}`)]]
     : [[Markup.button.callback('配置 Aria2', 'setup_aria2')]];
   
-  // Use filename as message text (Telegram requires non-empty text)
+  // Use filename as message text (Telegram requires non-empty text) 
+  // 使用文件名作为消息文本（Telegram要求非空文本）
   await ctx.reply(media.title, {
     reply_parameters: { message_id: messageId },
     reply_markup: Markup.inlineKeyboard(keyboard).reply_markup,

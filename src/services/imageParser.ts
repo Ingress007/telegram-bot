@@ -27,7 +27,8 @@ async function fetchPageContent(url: string): Promise<string> {
 function extractTwitterImages(html: string): string[] {
   const imageSet = new Set<string>();
   
-  // Pattern 1: og:image meta tags
+  // Pattern 1: og:image meta tags 
+  // 模式1: og:image元标签
   const ogImageRegex = /<meta\s+(?:property|name)="og:image"\s+content="([^"]+)"/gi;
   let match;
   while ((match = ogImageRegex.exec(html)) !== null) {
@@ -38,7 +39,8 @@ function extractTwitterImages(html: string): string[] {
     }
   }
   
-  // Pattern 2: twitter:image meta tags
+  // Pattern 2: twitter:image meta tags 
+  // 模式2: twitter:image元标签
   const twitterImageRegex = /<meta\s+(?:property|name)="twitter:image"\s+content="([^"]+)"/gi;
   while ((match = twitterImageRegex.exec(html)) !== null) {
     const url = match[1];
@@ -48,14 +50,15 @@ function extractTwitterImages(html: string): string[] {
     }
   }
   
-  // Pattern 3: Direct pbs.twimg.com/media URLs in content
+  // Pattern 3: Direct pbs.twimg.com/media URLs in content // 模式3: 内容中的直接pbs.twimg.com/media URL
   const directImageRegex = /https?:\/\/pbs\.twimg\.com\/media\/[A-Za-z0-9_-]+/gi;
   while ((match = directImageRegex.exec(html)) !== null) {
     const baseUrl = match[0];
     imageSet.add(baseUrl + '?format=jpg&name=large');
   }
   
-  // Pattern 4: Look for image URLs in JSON-like structures (Twitter embeds)
+  // Pattern 4: Look for image URLs in JSON-like structures (Twitter embeds) 
+  // 模式4: 在类JSON结构中查找图像URL (Twitter嵌入)
   const jsonImageRegex = /"media_url_https"\s*:\s*"(https:[^"]+pbs\.twimg\.com\/media\/[^"]+)"/gi;
   while ((match = jsonImageRegex.exec(html)) !== null) {
     let url = match[1].replace(/\\\//g, '/');
@@ -63,7 +66,7 @@ function extractTwitterImages(html: string): string[] {
     imageSet.add(baseUrl + '?format=jpg&name=large');
   }
   
-  // Pattern 5: data-image-url attributes
+  // Pattern 5: data-image-url attributes // 模式5: data-image-url属性
   const dataImageRegex = /data-image-url="([^"]+pbs\.twimg\.com\/media\/[^"]+)"/gi;
   while ((match = dataImageRegex.exec(html)) !== null) {
     const baseUrl = match[1].replace(/\?.*$/, '');
@@ -76,7 +79,8 @@ function extractTwitterImages(html: string): string[] {
 function extractInstagramImages(html: string): string[] {
   const imageSet = new Set<string>();
   
-  // Pattern 1: og:image meta tags
+  // Pattern 1: og:image meta tags 
+  // 模式1: og:image元标签
   const ogImageRegex = /<meta\s+(?:property|name)="og:image"\s+content="([^"]+)"/gi;
   let match;
   while ((match = ogImageRegex.exec(html)) !== null) {
@@ -86,7 +90,8 @@ function extractInstagramImages(html: string): string[] {
     }
   }
   
-  // Pattern 2: Look for display_url in JSON
+  // Pattern 2: Look for display_url in JSON 
+  // 模式2: 在JSON中查找display_url
   const displayUrlRegex = /"display_url"\s*:\s*"([^"]+)"/gi;
   while ((match = displayUrlRegex.exec(html)) !== null) {
     const url = match[1].replace(/\\u0026/g, '&').replace(/\\\//g, '/');
@@ -95,7 +100,8 @@ function extractInstagramImages(html: string): string[] {
     }
   }
   
-  // Pattern 3: src attributes with instagram CDN
+  // Pattern 3: src attributes with instagram CDN 
+// 模式3: 带有instagram CDN的src属性
   const srcRegex = /src="(https?:\/\/[^"]*(?:cdninstagram|fbcdn)[^"]+)"/gi;
   while ((match = srcRegex.exec(html)) !== null) {
     const url = decodeHtmlEntities(match[1]);
@@ -108,19 +114,21 @@ function extractInstagramImages(html: string): string[] {
 }
 
 function extractTitle(html: string, platform: Platform): string {
-  // Try og:title first
+  // Try og:title first 
+  // 首先尝试og:title
   const ogTitleMatch = html.match(/<meta\s+(?:property|name)="og:title"\s+content="([^"]+)"/i);
   if (ogTitleMatch) {
     return decodeHtmlEntities(ogTitleMatch[1]);
   }
   
-  // Try twitter:title
+  // Try twitter:title // 尝试twitter:title
   const twitterTitleMatch = html.match(/<meta\s+(?:property|name)="twitter:title"\s+content="([^"]+)"/i);
   if (twitterTitleMatch) {
     return decodeHtmlEntities(twitterTitleMatch[1]);
   }
   
-  // Try page title
+  // Try page title 
+  // 尝试页面标题
   const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
   if (titleMatch) {
     return decodeHtmlEntities(titleMatch[1]);

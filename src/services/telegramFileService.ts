@@ -1,6 +1,6 @@
 import type { Telegram } from 'telegraf';
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB - Telegram Bot API limit
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB - Telegram Bot API limit // 20MB - Telegram机器人API限制
 
 export interface FileInfo {
   fileId: string;
@@ -18,6 +18,7 @@ export interface FileDownloadResult {
 }
 
 /**
+ * 获取Telegram文件下载URL
  * Get file download URL from Telegram
  */
 export async function getFileDownloadUrl(
@@ -49,14 +50,16 @@ export async function getFileDownloadUrl(
 }
 
 /**
+ * 检查文件大小是否在Telegram Bot API限制范围内
  * Check if file size is within Telegram Bot API limit
  */
 export function isFileSizeValid(fileSize?: number): boolean {
-  if (fileSize === undefined) return true; // Assume valid if unknown
+  if (fileSize === undefined) return true; // Assume valid if unknown // 如果未知则假设有效
   return fileSize <= MAX_FILE_SIZE;
 }
 
 /**
+ * 格式化文件大小用于显示
  * Format file size for display
  */
 export function formatFileSize(bytes?: number): string {
@@ -68,6 +71,7 @@ export function formatFileSize(bytes?: number): string {
 }
 
 /**
+ * 从MIME类型获取文件扩展名
  * Get file extension from MIME type
  */
 export function getExtensionFromMime(mimeType?: string): string {
@@ -97,6 +101,7 @@ export function getExtensionFromMime(mimeType?: string): string {
 }
 
 /**
+ * 生成安全的文件名
  * Generate safe filename
  */
 export function generateFileName(
@@ -104,7 +109,8 @@ export function generateFileName(
   extension: string,
   uniqueId: string
 ): string {
-  // Remove illegal characters
+  // Remove illegal characters 
+  // 移除非法字符
   const safeName = baseName
     .replace(/[<>:"/\\|?*]/g, '_')
     .substring(0, 100);

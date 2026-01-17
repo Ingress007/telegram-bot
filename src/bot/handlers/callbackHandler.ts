@@ -16,13 +16,13 @@ export async function handleCallback(ctx: CallbackContext): Promise<void> {
     return;
   }
 
-  // Handle setup callbacks
+  // Handle setup callbacks // 处理设置回调
   if (['cancel_setup', 'skip_secret', 'skip_dir'].includes(data)) {
     await handleSetupCallback(ctx, data);
     return;
   }
 
-  // Handle other callbacks
+  // Handle other callbacks // 处理其他回调
   if (data === 'setup_aria2') {
     await ctx.answerCbQuery();
     await ctx.reply('使用 /set_aria2 命令开始配置 Aria2。');
@@ -65,14 +65,14 @@ export async function handleCallback(ctx: CallbackContext): Promise<void> {
     return;
   }
 
-  // Handle download callback
+  // Handle download callback // 处理下载回调
   if (data.startsWith('download:')) {
     const mediaKey = data.substring(9);
     await handleDownload(ctx, userId, mediaKey);
     return;
   }
 
-  // Handle batch download callback
+  // Handle batch download callback // 处理批量下载回调
   if (data.startsWith('download_all:')) {
     const mediaKey = data.substring(13);
     await handleBatchDownload(ctx, userId, mediaKey);
@@ -124,13 +124,13 @@ async function handleDownload(ctx: CallbackContext, userId: number, mediaKey: st
 
   await ctx.answerCbQuery('正在发送到 Aria2...');
 
-  // Generate filename - preserve original extension if present
+  // Generate filename - preserve original extension if present // 生成文件名 - 如果存在则保留原始扩展名
   const safeTitle = media.title
-    .replace(/\s+/g, '')  // Replace all whitespace (spaces, tabs, newlines) with underscores
-    .replace(/[<>:"/\\|?*]/g, '')  // Replace other illegal characters
+    .replace(/\s+/g, '')  // Replace all whitespace (spaces, tabs, newlines) with underscores // 将所有空白字符（空格、制表符、换行符）替换为下划线
+    .replace(/[<>:"/\\|?*]/g, '')  // Replace other illegal characters // 替换其他非法字符
     .substring(0, 100);
   
-  // Check if title already has extension
+  // Check if title already has extension // 检查标题是否已有扩展名
   const hasExtension = /\.\w{2,5}$/.test(safeTitle);
   let filename: string;
   if (hasExtension) {
@@ -174,15 +174,15 @@ async function handleBatchDownload(ctx: CallbackContext, userId: number, mediaKe
   await ctx.answerCbQuery('正在批量发送到 Aria2...');
 
   const safeTitle = media.title
-    .replace(/\s+/g, '')  // Replace all whitespace (spaces, tabs, newlines) with underscores
-    .replace(/[<>:"/\\|?*]/g, '')  // Replace other illegal characters
+    .replace(/\s+/g, '')  // Replace all whitespace (spaces, tabs, newlines) with underscores // 将所有空白字符（空格、制表符、换行符）替换为下划线
+    .replace(/[<>:"/\\|?*]/g, '')  // Replace other illegal characters // 替换其他非法字符
     .substring(0, 80);
 
   const results: { success: boolean; gid?: string; type: string; index: number; error?: string }[] = [];
 
-  // Handle mixed media: download both videos and images
+  // Handle mixed media: download both videos and images // 处理混合媒体：下载视频和图片
   if (media.type === 'mixed') {
-    // Download videos
+    // Download videos // 下载视频
     if (media.videoUrls && media.videoUrls.length > 0) {
       for (let i = 0; i < media.videoUrls.length; i++) {
         const videoUrl = media.videoUrls[i];
@@ -195,7 +195,7 @@ async function handleBatchDownload(ctx: CallbackContext, userId: number, mediaKe
       }
     }
     
-    // Download images
+    // Download images // 下载图片
     if (media.imageUrls && media.imageUrls.length > 0) {
       for (let i = 0; i < media.imageUrls.length; i++) {
         const imageUrl = media.imageUrls[i];
@@ -208,7 +208,7 @@ async function handleBatchDownload(ctx: CallbackContext, userId: number, mediaKe
       }
     }
   } else {
-    // Handle single type batch (videos or images)
+    // Handle single type batch (videos or images) // 处理单一类型批处理（视频或图片）
     const isVideoBatch = media.type === 'videos' && media.videoUrls && media.videoUrls.length > 0;
     const isImageBatch = media.type === 'images' && media.imageUrls && media.imageUrls.length > 0;
     

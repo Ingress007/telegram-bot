@@ -20,8 +20,8 @@ export const config: AppConfig = {
   parseTimeout: parseInt(getEnvVar('PARSE_TIMEOUT', '60000'), 10),
 };
 
-// Proxy configuration (optional)
+// Proxy configuration (optional) // 代理配置（可选）
 export const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.PROXY_URL;
 
-// Cookies file for yt-dlp (optional, for Facebook/TikTok login)
+// Cookies file for yt-dlp (optional, for Facebook/TikTok login) // yt-dlp的Cookies文件（可选，用于Facebook/TikTok登录）
 export const cookiesFile = process.env.YTDLP_COOKIES;

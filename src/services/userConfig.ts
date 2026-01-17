@@ -20,7 +20,7 @@ function readDatabase(): UsersDatabase {
     const data = fs.readFileSync(DB_FILE, 'utf-8');
     return JSON.parse(data) as UsersDatabase;
   } catch {
-    console.error('Failed to read database, creating new one');
+    console.error('Failed to read database, creating new one'); // 读取数据库失败，创建新的数据库
     return { users: {} };
   }
 }

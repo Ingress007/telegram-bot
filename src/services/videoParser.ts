@@ -7,7 +7,8 @@ import { detectPlatform } from './linkDetector.js';
 const YTDlpWrapClass = (YTDlpWrap as any).default || YTDlpWrap;
 const ytDlp = new YTDlpWrapClass(config.ytdlpPath);
 
-// Build extra arguments for yt-dlp
+// Build extra arguments for yt-dlp 
+// 为yt-dlp构建额外参数
 function getYtdlpArgs(): string[] {
   const args: string[] = [];
   if (cookiesFile) {
@@ -79,7 +80,8 @@ export async function parseVideo(url: string): Promise<ParseResult> {
       ),
     ]);
 
-    // Prefer direct MP4 downloads (protocol: https) over HLS streams (m3u8)
+    // Prefer direct MP4 downloads (protocol: https) over HLS streams (m3u8) 
+    // 优先选择直接MP4下载（协议：https）而不是HLS流（m3u8）
     const mp4Formats = (output.formats || [])
       .filter(f => f.url && f.ext === 'mp4' && f.protocol === 'https' && f.vcodec !== 'none')
       .sort((a, b) => (b.width || 0) - (a.width || 0));
@@ -93,7 +95,8 @@ export async function parseVideo(url: string): Promise<ParseResult> {
       url: f.url,
     }));
 
-    // Use top-level url first (best format), then fallback to mp4 formats
+    // Use top-level url first (best format), then fallback to mp4 formats 
+    // 优先使用顶层URL（最佳格式），然后回退到MP4格式
     const directUrl = output.url || mp4Formats[0]?.url || '';
     const resolution = output.resolution || 
       (output.width && output.height ? `${output.width}x${output.height}` : undefined) ||

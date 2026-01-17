@@ -20,8 +20,8 @@ const PLATFORM_PATTERNS: Record<Platform, RegExp[]> = {
     /https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/i,
     /https?:\/\/(www\.)?youtube\.com\/shorts\//i,
   ],
-  telegram: [], // Telegram media handled separately
-  unknown: [],
+  telegram: [], // Telegram media handled separately // Telegram媒体单独处理
+  unknown: [], // Unknown platform // 未知平台
 };
 
 const URL_REGEX = /https?:\/\/[^\s<>"{}|\\^`[\]]+/gi;

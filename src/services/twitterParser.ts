@@ -23,10 +23,10 @@ interface TwitterParseResult {
 }
 
 function extractTweetId(url: string): string | null {
-  // Match patterns like:
-  // https://twitter.com/user/status/123456789
-  // https://x.com/user/status/123456789
-  // https://mobile.twitter.com/user/status/123456789
+  // Match patterns like: // 匹配以下模式:
+  // https://twitter.com/user/status/123456789 // https://twitter.com/user/status/123456789
+  // https://x.com/user/status/123456789 // https://x.com/user/status/123456789
+  // https://mobile.twitter.com/user/status/123456789 // https://mobile.twitter.com/user/status/123456789
   const match = url.match(/(?:twitter\.com|x\.com)\/[^/]+\/status\/(\d+)/i);
   return match ? match[1] : null;
 }
@@ -42,6 +42,7 @@ export async function parseTwitter(url: string): Promise<TwitterParseResult> {
   }
 
   try {
+    // Use vxtwitter API // 使用vxtwitter API
     // Use vxtwitter API
     const apiUrl = `https://api.vxtwitter.com/Twitter/status/${tweetId}`;
     const response = await fetch(apiUrl, {
@@ -65,14 +66,14 @@ export async function parseTwitter(url: string): Promise<TwitterParseResult> {
 
     const mediaExtended = data.media_extended || [];
     
-    // Separate videos and images
+    // Separate videos and images // 分离视频和图片
     const videoItems = mediaExtended.filter(m => m.type === 'video' || m.type === 'gif');
     const imageItems = mediaExtended.filter(m => m.type === 'image');
     
-    // Collect all video URLs
+    // Collect all video URLs // 收集所有视频URL
     const videoUrls = videoItems.map(v => v.url).filter(Boolean);
     
-    // Collect all image URLs with high quality
+    // Collect all image URLs with high quality // 收集所有高质量图片URL
     const imageUrls = imageItems
       .map(img => img.url)
       .filter(Boolean)
@@ -83,7 +84,7 @@ export async function parseTwitter(url: string): Promise<TwitterParseResult> {
         return u;
       });
 
-    // Clean up tweet text by removing newlines and extra spaces
+    // Clean up tweet text by removing newlines and extra spaces // 清理推文文本，移除换行符和多余空格
     const cleanedTweetText = data.text ? data.text.replace(/\s+/g, ' ').trim() : '';
     
     const title = cleanedTweetText
@@ -91,12 +92,13 @@ export async function parseTwitter(url: string): Promise<TwitterParseResult> {
       : `@${data.user_screen_name} 的推文`;
 
     if (videoUrls.length > 0) {
+      // Video content (single or multiple, possibly with images) // 视频内容（单个或多个，可能包含图片）
       // Video content (single or multiple, possibly with images)
       const firstVideo = videoItems[0];
-      // Collect all video thumbnails
+      // Collect all video thumbnails // 收集所有视频缩略图
       const thumbnails = videoItems.map(v => v.thumbnail_url).filter(Boolean) as string[];
       
-      // Determine type: mixed if both videos and images exist
+      // Determine type: mixed if both videos and images exist // 确定类型：如果同时存在视频和图片，则为混合类型
       let type: 'video' | 'videos' | 'mixed';
       if (imageUrls.length > 0 && videoUrls.length > 0) {
         type = 'mixed';
@@ -122,6 +124,7 @@ export async function parseTwitter(url: string): Promise<TwitterParseResult> {
 
       return { success: true, media };
     } else if (imageUrls.length > 0) {
+      // Image content // 图片内容
       // Image content
       const media: MediaInfo = {
         type: imageUrls.length > 1 ? 'images' : 'image',

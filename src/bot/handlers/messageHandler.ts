@@ -27,18 +27,18 @@ export async function handleMessage(ctx: TextContext): Promise<void> {
 
   if (!userId || !text) return;
 
-  // Check if user is in setup flow
+  // Check if user is in setup flow // 检查用户是否在设置流程中
   if (isInSetup(userId)) {
     const handled = await handleSetupMessage(ctx);
     if (handled) return;
   }
 
-  // Extract supported URLs
+  // Extract supported URLs // 提取支持的URL
   const urls = extractSupportedUrls(text);
   
   if (urls.length === 0) return;
 
-  // Process each URL
+  // Process each URL // 处理每个URL
   for (const url of urls) {
     await processMediaUrl(ctx, url, userId);
   }
@@ -50,7 +50,7 @@ async function processMediaUrl(ctx: TextContext, url: string, userId: number): P
   if (!ctx.chat) return;
   const messageId = ctx.message.message_id;
 
-  // Try video parsing first
+  // Try video parsing first // 首先尝试视频解析
   const videoResult = await parseVideo(url);
 
   if (videoResult.success && videoResult.video) {
@@ -58,7 +58,7 @@ async function processMediaUrl(ctx: TextContext, url: string, userId: number): P
 
     console.log(`[Parse] Video: ${video.title}, DirectURL: ${video.directUrl ? 'YES' : 'NO'}`);
 
-    // Store media info and send media directly
+    // Store media info and send media directly // 存储媒体信息并直接发送媒体
     const mediaKey = `${userId}_${Date.now()}`;
     pendingMedia.set(mediaKey, {
       url: video.url,
@@ -68,19 +68,19 @@ async function processMediaUrl(ctx: TextContext, url: string, userId: number): P
     });
     cleanupPendingMedia();
 
-    // Build keyboard (only download button)
+    // Build keyboard (only download button) // 构建键盘（仅下载按钮）
     const keyboard = hasAria2Config(userId)
       ? [[Markup.button.callback('发送到Aria2下载', `download:${mediaKey}`)]]
       : [[Markup.button.callback('配置 Aria2', 'setup_aria2')]];
 
-    // Send video directly
+    // Send video directly // 直接发送视频
     if (video.directUrl) {
       await ctx.replyWithVideo(video.directUrl, {
         caption: video.title,
         reply_parameters: { message_id: messageId },
         reply_markup: Markup.inlineKeyboard(keyboard).reply_markup,
       }).catch(async () => {
-        // If video send fails, send as text with link
+        // If video send fails, send as text with link // 如果视频发送失败，以带链接的文本形式发送
         await ctx.reply(`${video.title}\n\n${video.directUrl}`, {
           reply_parameters: { message_id: messageId },
           reply_markup: Markup.inlineKeyboard(keyboard).reply_markup,
@@ -90,7 +90,7 @@ async function processMediaUrl(ctx: TextContext, url: string, userId: number): P
     return;
   }
 
-  // If video parsing failed, try Twitter API for Twitter links
+  // If video parsing failed, try Twitter API for Twitter links // 如果视频解析失败，对Twitter链接尝试Twitter API
   if (platform === 'twitter') {
     const twitterResult = await parseTwitter(url);
 
@@ -101,7 +101,7 @@ async function processMediaUrl(ctx: TextContext, url: string, userId: number): P
     }
   }
 
-  // Try image parsing for Twitter/Instagram
+  // Try image parsing for Twitter/Instagram // 对Twitter/Instagram尝试图像解析
   if (platform === 'twitter' || platform === 'instagram') {
     const imageResult = await parseImage(url);
 
@@ -112,7 +112,7 @@ async function processMediaUrl(ctx: TextContext, url: string, userId: number): P
     }
   }
 
-  // All parsing failed
+  // All parsing failed // 所有解析均失败
   await ctx.reply(`❌ 解析失败\n\n${videoResult.error || '未知错误'}`, {
     reply_parameters: { message_id: messageId },
   });
@@ -131,7 +131,7 @@ async function handleMediaResult(
 
   console.log(`[Parse] ${media.type}: ${media.title}, Videos: ${media.videoUrls?.length || 0}, Images: ${media.imageUrls?.length || 0}, Thumbnails: ${media.thumbnails?.length || 0}`);
 
-  // Store media info for callback
+  // Store media info for callback // 存储回调的媒体信息
   const mediaKey = `${userId}_${Date.now()}`;
   pendingMedia.set(mediaKey, {
     url: media.url,
@@ -144,7 +144,7 @@ async function handleMediaResult(
 
   cleanupPendingMedia();
 
-  // Build keyboard (only download button)
+  // Build keyboard (only download button) // 构建键盘（仅下载按钮）
   const hasMultipleMedia = isMultiVideo || isMultiImage || isMixed;
   const keyboard = hasAria2Config(userId)
     ? [[Markup.button.callback('发送到Aria2下载', hasMultipleMedia ? `download_all:${mediaKey}` : `download:${mediaKey}`)]]
@@ -152,7 +152,7 @@ async function handleMediaResult(
 
   const caption = media.title;
 
-  // Generate media count text for button message
+  // Generate media count text for button message // 为按钮消息生成媒体计数文本
   const getMediaCountText = () => {
     const videoCount = media.videoUrls?.length || 0;
     const imageCount = media.imageUrls?.length || 0;
@@ -167,24 +167,24 @@ async function handleMediaResult(
   };
 
   if (isMixed) {
-    // Mixed media: send videos and images together as media group
+    // Mixed media: send videos and images together as media group // 混合媒体：将视频和图像一起作为媒体组发送
     const mediaGroup: Array<{ type: 'video' | 'photo'; media: string; caption?: string }> = [];
     
-    // Add videos
+    // Add videos // 添加视频
     if (media.videoUrls) {
       for (const videoUrl of media.videoUrls) {
         mediaGroup.push({ type: 'video', media: videoUrl });
       }
     }
     
-    // Add images
+    // Add images // 添加图像
     if (media.imageUrls) {
       for (const imageUrl of media.imageUrls) {
         mediaGroup.push({ type: 'photo', media: imageUrl });
       }
     }
     
-    // Add caption to the last item
+    // Add caption to the last item // 为最后一项添加说明文字
     if (mediaGroup.length > 0) {
       mediaGroup[mediaGroup.length - 1].caption = caption;
     }
@@ -195,7 +195,7 @@ async function handleMediaResult(
         reply_parameters: { message_id: replyToMessageId },
       });
       sent = true;
-      // Send button separately with media count
+      // Send button separately with media count // 单独发送带有媒体计数的按钮
       await ctx.reply(getMediaCountText(), {
         reply_markup: Markup.inlineKeyboard(keyboard).reply_markup,
       });
@@ -203,9 +203,9 @@ async function handleMediaResult(
       console.error('[Mixed MediaGroup Error]', err);
     }
     
-    // Fallback: send separately if media group fails
+    // Fallback: send separately if media group fails // 备选方案：如果媒体组发送失败则分别发送
     if (!sent) {
-      // Send videos first
+      // Send videos first // 首先发送视频
       if (media.videoUrls) {
         for (const videoUrl of media.videoUrls) {
           try {
@@ -216,7 +216,7 @@ async function handleMediaResult(
           } catch {}
         }
       }
-      // Then images
+      // Then images // 然后发送图像
       if (media.imageUrls) {
         for (const imageUrl of media.imageUrls) {
           try {
@@ -227,7 +227,7 @@ async function handleMediaResult(
           } catch {}
         }
       }
-      // Send caption and button
+      // Send caption and button // 发送说明文字和按钮
       if (sent) {
         await ctx.reply(caption, {
           reply_markup: Markup.inlineKeyboard(keyboard).reply_markup,
@@ -235,7 +235,7 @@ async function handleMediaResult(
       }
     }
   } else if (isMultiVideo && media.videoUrls && media.videoUrls.length > 1) {
-    // Send multiple videos as media group
+    // Send multiple videos as media group // 将多个视频作为媒体组发送
     const mediaGroup = media.videoUrls.slice(0, 10).map((url, i, arr) => ({
       type: 'video' as const,
       media: url,
@@ -255,7 +255,7 @@ async function handleMediaResult(
       console.error('[Video MediaGroup Error]', err);
     }
     
-    // Fallback: use thumbnails as preview (Twitter videos are protected)
+    // Fallback: use thumbnails as preview (Twitter videos are protected) // 备选方案：使用缩略图预览（Twitter视频受保护）
     if (!sent && media.thumbnails && media.thumbnails.length > 0) {
       const thumbGroup = media.thumbnails.slice(0, 10).map((url, i, arr) => ({
         type: 'photo' as const,
@@ -275,7 +275,7 @@ async function handleMediaResult(
       }
     }
     
-    // Final fallback: text with URLs
+    // Final fallback: text with URLs // 最终备选方案：带URL的文本
     if (!sent) {
       await ctx.reply(`${caption}\n\n视频链接:\n${media.videoUrls.join('\n')}`, {
         reply_parameters: { message_id: replyToMessageId },
@@ -283,7 +283,7 @@ async function handleMediaResult(
       });
     }
   } else if (isMultiImage && media.imageUrls && media.imageUrls.length > 1) {
-    // Send multiple images as media group
+    // Send multiple images as media group // 将多个图像作为媒体组发送
     const mediaGroup = media.imageUrls.slice(0, 10).map((url, i, arr) => ({
       type: 'photo' as const,
       media: url,
@@ -293,13 +293,13 @@ async function handleMediaResult(
       await ctx.replyWithMediaGroup(mediaGroup, {
         reply_parameters: { message_id: replyToMessageId },
       });
-      // Send button in separate message with media count
+      // Send button in separate message with media count // 在单独的消息中发送带有媒体计数的按钮
       await ctx.reply(getMediaCountText(), {
         reply_markup: Markup.inlineKeyboard(keyboard).reply_markup,
       });
     } catch (err) {
       console.error('[MediaGroup Send Error]', err);
-      // Fallback: send images one by one
+      // Fallback: send images one by one // 备选方案：逐个发送图像
       for (let i = 0; i < Math.min(media.imageUrls.length, 10); i++) {
         const imageUrl = media.imageUrls[i];
         const isFirst = i === 0;
@@ -316,7 +316,7 @@ async function handleMediaResult(
       }
     }
   } else if (isVideo && media.directUrl) {
-    // Send single video - try video first, then thumbnail as fallback
+    // Send single video - try video first, then thumbnail as fallback // 发送单个视频 - 首先尝试视频，然后使用缩略图作为备选方案
     let sent = false;
     try {
       await ctx.replyWithVideo(media.directUrl, {
@@ -331,7 +331,7 @@ async function handleMediaResult(
       console.error('[Video Send Error]', err);
     }
     
-    // If video failed, try sending thumbnail as preview
+    // If video failed, try sending thumbnail as preview // 如果视频发送失败，尝试发送缩略图预览
     if (!sent && media.thumbnail) {
       try {
         await ctx.replyWithPhoto(media.thumbnail, {
@@ -345,7 +345,7 @@ async function handleMediaResult(
       }
     }
     
-    // Final fallback to text
+    // Final fallback to text // 最终备选方案：文本
     if (!sent) {
       await ctx.reply(`${caption}\n\n${media.directUrl}`, {
         reply_parameters: { message_id: replyToMessageId },
@@ -353,7 +353,7 @@ async function handleMediaResult(
       });
     }
   } else if (media.directUrl) {
-    // Send single image
+    // Send single image // 发送单个图像
     try {
       await ctx.replyWithPhoto(media.directUrl, {
         caption,

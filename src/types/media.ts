@@ -37,10 +37,10 @@ export interface MediaInfo {
   platform: Platform;
   title: string;
   url: string;
-  directUrl: string;  // video URL or first image URL
-  imageUrls?: string[];  // all image URLs for multi-image posts
-  videoUrls?: string[];  // all video URLs for multi-video posts
-  thumbnails?: string[]; // all video thumbnails for multi-video posts
+  directUrl: string;  // video URL or first image URL // 视频URL或第一张图片URL
+  imageUrls?: string[];  // all image URLs for multi-image posts // 多图帖子的所有图片URL
+  videoUrls?: string[];  // all video URLs for multi-video posts // 多视频帖子的所有视频URL
+  thumbnails?: string[]; // all video thumbnails for multi-video posts // 多视频帖子的所有视频缩略图
   thumbnail?: string;
   duration?: number;
   resolution?: string;
