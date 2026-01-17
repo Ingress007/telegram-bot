@@ -1,4 +1,4 @@
-export type Platform = 'twitter' | 'facebook' | 'tiktok' | 'instagram' | 'youtube' | 'unknown';
+export type Platform = 'twitter' | 'facebook' | 'tiktok' | 'instagram' | 'youtube' | 'telegram' | 'unknown';
 
 export type MediaType = 'video' | 'videos' | 'image' | 'images' | 'mixed';
 

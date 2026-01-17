@@ -20,6 +20,7 @@ const PLATFORM_PATTERNS: Record<Platform, RegExp[]> = {
     /https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/i,
     /https?:\/\/(www\.)?youtube\.com\/shorts\//i,
   ],
+  telegram: [], // Telegram media handled separately
   unknown: [],
 };
 
@@ -58,6 +59,7 @@ export function getPlatformEmoji(platform: Platform): string {
     tiktok: '🎵',
     instagram: '📸',
     youtube: '📺',
+    telegram: '✈️',
     unknown: '🔗',
   };
   return emojis[platform];
@@ -70,6 +72,7 @@ export function getPlatformName(platform: Platform): string {
     tiktok: 'TikTok',
     instagram: 'Instagram',
     youtube: 'YouTube',
+    telegram: 'Telegram',
     unknown: 'Unknown',
   };
   return names[platform];

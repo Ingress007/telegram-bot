@@ -13,6 +13,11 @@ import {
 } from './commands/index.js';
 import { handleMessage } from './handlers/messageHandler.js';
 import { handleCallback } from './handlers/callbackHandler.js';
+import {
+  handleTelegramPhoto,
+  handleTelegramVideo,
+  handleTelegramDocument,
+} from './handlers/telegramMediaHandler.js';
 
 function createProxyAgent() {
   if (!proxyUrl) return undefined;
@@ -54,6 +59,11 @@ export function createBot(): Telegraf<Context> {
       await handleMessage(ctx);
     }
   });
+
+  // Handle Telegram media messages
+  bot.on('photo', handleTelegramPhoto);
+  bot.on('video', handleTelegramVideo);
+  bot.on('document', handleTelegramDocument);
 
   // Handle callback queries
   bot.on('callback_query', (ctx) => {

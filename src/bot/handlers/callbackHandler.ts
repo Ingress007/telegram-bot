@@ -124,12 +124,20 @@ async function handleDownload(ctx: CallbackContext, userId: number, mediaKey: st
 
   await ctx.answerCbQuery('正在发送到 Aria2...');
 
-  // Generate filename from title with appropriate extension
+  // Generate filename - preserve original extension if present
   const safeTitle = media.title
     .replace(/[<>:"/\\|?*]/g, '_')
     .substring(0, 100);
-  const ext = media.type === 'image' ? 'jpg' : 'mp4';
-  const filename = `${safeTitle}.${ext}`;
+  
+  // Check if title already has extension
+  const hasExtension = /\.\w{2,5}$/.test(safeTitle);
+  let filename: string;
+  if (hasExtension) {
+    filename = safeTitle;
+  } else {
+    const ext = media.type === 'image' ? 'jpg' : 'mp4';
+    filename = `${safeTitle}.${ext}`;
+  }
 
   console.log(`[Download] Sending ${media.type} to Aria2: ${media.directUrl}`);
   
@@ -137,11 +145,8 @@ async function handleDownload(ctx: CallbackContext, userId: number, mediaKey: st
 
   if (result.success) {
     deletePendingMedia(mediaKey);
-    const typeEmoji = media.type === 'image' || media.type === 'images' ? '🖼' : '🎬';
-    const typeName = media.type === 'image' || media.type === 'images' ? '图片' : '视频';
     await ctx.reply(
       `✅ 已发送到 Aria2 下载\n\n` +
-      `${typeEmoji} 类型: ${typeName}\n` +
       `📄 文件名: ${filename}\n` +
       `🆔 任务 ID: ${result.gid}`
     );

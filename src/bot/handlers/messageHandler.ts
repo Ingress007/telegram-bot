@@ -10,7 +10,7 @@ import type { MediaType } from '../../types/index.js';
 
 type TextContext = Context & { message: { text: string } };
 
-interface PendingMedia {
+export interface PendingMedia {
   url: string;
   directUrl: string;
   title: string;
@@ -385,4 +385,11 @@ export function getPendingMedia(key: string) {
 
 export function deletePendingMedia(key: string) {
   pendingMedia.delete(key);
+}
+
+export function storePendingMedia(userId: number, media: PendingMedia): string {
+  const mediaKey = `${userId}_${Date.now()}`;
+  pendingMedia.set(mediaKey, media);
+  cleanupPendingMedia();
+  return mediaKey;
 }
