@@ -49,7 +49,7 @@ export function createBot(): Telegraf<Context> {
   bot.command('start', startCommand);
   bot.command('help', helpCommand);
   bot.command('set_aria2', setAria2Command);
-  bot.command('aria2_config', aria2ConfigCommand);
+  bot.command('my_config', aria2ConfigCommand);
   bot.command('delete_config', deleteConfigCommand);
   bot.command('test_aria2', testAria2Command);
 
@@ -76,19 +76,34 @@ export function createBot(): Telegraf<Context> {
 }
 
 export async function startBot(bot: Telegraf<Context>): Promise<void> {
-  // Set bot commands menu (non-blocking)
+  // Set bot commands menu with different scopes (non-blocking)
   try {
+    // Set general commands for private chats (default scope)
     await bot.telegram.setMyCommands([
       { command: 'start', description: '开始使用' },
       { command: 'help', description: '帮助信息' },
-      { command: 'set_aria2', description: '配置 Aria2' },
-      { command: 'aria2_config', description: '查看 Aria2 配置' },
+      { command: 'set_aria2', description: '设置 Aria2配置' },
       { command: 'test_aria2', description: '测试 Aria2 连接' },
-      { command: 'delete_config', description: '删除配置' },
-    ]);
-    console.log('✅ Bot commands registered');
+      { command: 'aria2_config', description: '查看 Aria2 配置' },
+      { command: 'delete_config', description: '删除 Aria2 配置' }
+    ], { scope: { type: 'all_private_chats' } });
+    
+    // Set specific commands for group chats
+    // 群组命令菜单
+    await bot.telegram.setMyCommands([
+      { command: 'help', description: '帮助信息' },
+    ], { scope: { type: 'all_group_chats' } });
+    
+    // Set commands for all administrators in group chats
+    // 管理员命令菜单
+    await bot.telegram.setMyCommands([
+      { command: 'help', description: '帮助信息' },
+
+    ], { scope: { type: 'all_chat_administrators' } });
+    
+    // console.log('✅ Bot commands registered with scopes');
   } catch (err) {
-    console.warn('⚠️ Failed to set commands menu, continuing anyway:', (err as Error).message);
+    console.warn('⚠️ Failed to set commands menu with scopes, continuing anyway:', (err as Error).message);
   }
 
   // Start polling
