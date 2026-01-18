@@ -49,7 +49,7 @@ export function createBot(): Telegraf<Context> {
   bot.command('start', startCommand);
   bot.command('help', helpCommand);
   bot.command('set_aria2', setAria2Command);
-  bot.command('my_config', aria2ConfigCommand);
+  bot.command('aria2_config', aria2ConfigCommand);
   bot.command('delete_config', deleteConfigCommand);
   bot.command('test_aria2', testAria2Command);
 

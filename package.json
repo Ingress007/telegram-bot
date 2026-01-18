@@ -6,9 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev tsx watch --require ./src/preload.ts src/index.ts",
-    "dev:win": "cross-env NODE_ENV=dev tsx watch --require ./src/preload.ts src/index.ts",
     "prod": "cross-env NODE_ENV=prod node --require ./dist/preload.js dist/index.js",
-    "prod:win": "cross-env NODE_ENV=prod node --require ./dist/preload.js dist/index.js",
     "build": "tsc",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit"
