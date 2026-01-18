@@ -18,6 +18,7 @@ export async function helpCommand(ctx: Context): Promise<void> {
 
 2️⃣ 支持的平台
 • X (Twitter) - 视频/图片推文
+• Telegram - 视频/图片/文件消息
 • Instagram - Reels/图片帖子
 • Facebook - Reels/图片帖子
 • YouTube - Shorts/视频

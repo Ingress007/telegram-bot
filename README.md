@@ -15,8 +15,11 @@ Telegram Video Bot 是一个面向聊天场景的视频/图片解析与下载机
 ## 当前版本状态（v1.0）
 
 - 项目 1.0 基本功能已完成
-- 已在实际环境中对 **X（Twitter）平台帖子** 进行测试：
+- 已测试对 **X（Twitter）平台帖子** 的解析与下载：
   - 解析单条推文中的视频/图片正常
+  - 通过按钮将媒体任务发送到 Aria2 下载正常
+- 已测试对 **Telegram转发的视频/图片/文件** 的解析与下载：
+  - 解析正常（但是文件大小有限制，最大为 50MB）
   - 通过按钮将媒体任务发送到 Aria2 下载正常
 - 其他平台（Instagram、YouTube、Facebook、TikTok）解析逻辑已实现，行为依赖 `yt-dlp` 以及目标站点当前策略，推荐在实际部署前逐一验证。
 
@@ -24,9 +27,10 @@ Telegram Video Bot 是一个面向聊天场景的视频/图片解析与下载机
 
 - 支持平台链接识别：
   - X / Twitter
+  - Telegram
   - Instagram
-  - YouTube
   - Facebook
+  - YouTube
   - TikTok
 - 媒体解析：
   - 使用 `yt-dlp` 解析视频信息（标题、时长、分辨率、大小等）
@@ -134,7 +138,7 @@ Telegram Video Bot 是一个面向聊天场景的视频/图片解析与下载机
 
 根据当前 v1.0 的实现，后续可以考虑：
 
-- 针对 Instagram / YouTube / Facebook / TikTok 等平台进行更全面的兼容性测试与优化。
+- 针对 Instagram  / Facebook / YouTube / TikTok 等平台进行更全面的兼容性测试与优化。
 - 为 Aria2 下载任务提供简单的查询/管理能力（查看进度、取消任务等）。
 - 增加多语言支持（目前文案主要为中文）。
 - 引入更完善的日志和监控（按 `LOG_LEVEL` 控制输出）。
