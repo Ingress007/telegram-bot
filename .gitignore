@@ -1,6 +1,8 @@
 node_modules/
 dist/
-.env
+.env.dev
+.env.prod
+
 data/users.json
 *.log
 .DS_Store

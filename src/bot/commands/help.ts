@@ -17,10 +17,10 @@ export async function helpCommand(ctx: Context): Promise<void> {
 直接发送支持平台的视频链接，Bot 会自动解析。
 
 2️⃣ 支持的平台
-• X (Twitter) - 推文视频，图片
-• Instagram - Reels/帖子视频
+• X (Twitter) - 视频/图片推文
+• Instagram - Reels/图片帖子
+• Facebook - Reels/图片帖子
 • YouTube - Shorts/视频
-• Facebook - 视频帖子
 • TikTok - 短视频
 
 3️⃣ Aria2 下载

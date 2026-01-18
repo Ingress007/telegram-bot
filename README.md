@@ -81,26 +81,41 @@ Telegram Video Bot 是一个面向聊天场景的视频/图片解析与下载机
    npm install
    ```
 
-2. 配置环境变量（`.env`）：
+2. 配置环境变量：
 
+   - **开发环境**：配置 `.env.dev` 文件
+   - **生产环境**：配置 `.env.prod` 文件
+
+   常用配置项：
    - `BOT_TOKEN`：Telegram Bot Token（必填）
    - `DATA_DIR`：用户数据目录（可选，默认 `./data`）
+   - `LOG_LEVEL`：日志级别（开发用 `info`，生产用 `warn`）
    - `YTDLP_PATH`：`yt-dlp` 可执行文件路径（建议显式配置）
    - `PARSE_TIMEOUT`：解析超时时间，默认 `60000` 毫秒
    - `HTTPS_PROXY` / `HTTP_PROXY` / `PROXY_URL`：可选代理
    - `YTDLP_COOKIES`：可选 cookies 文件，适用于需要登录的视频站点
 
-3. 开发模式运行：
+3. 环境切换运行：
 
    ```bash
+   # 开发环境运行（Linux/Mac）
    npm run dev
+   
+   # 开发环境运行（Windows）
+   npm run dev:win
    ```
 
 4. 构建与生产运行：
 
    ```bash
+   # 构建项目
    npm run build
-   npm start
+   
+   # 生产环境运行（Linux/Mac）
+   npm run prod
+   
+   # 生产环境运行（Windows）
+   npm run prod:win
    ```
 
 ## 基本使用流程（以 X / Twitter 为例）
