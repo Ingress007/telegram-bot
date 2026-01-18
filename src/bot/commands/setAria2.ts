@@ -58,8 +58,7 @@ export async function setAria2Command(ctx: Context): Promise<void> {
   message += '格式: http://host:port/jsonrpc\n\n';
   message += '示例:\n';
   message += '• 局域网: http://192.168.1.1:6800/jsonrpc\n';
-  message += '• 内网穿透: http://your-domain:6800/jsonrpc\n';
-  message += '• OpenWrt: http://openwrt.lan:6800/jsonrpc';
+  message += '• 公网: http://example.com:6800/jsonrpc\n\n';
 
   await ctx.reply(message, Markup.inlineKeyboard([
     [Markup.button.callback('❌ 取消', 'cancel_setup')],

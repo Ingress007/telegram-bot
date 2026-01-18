@@ -14,7 +14,7 @@ export async function helpCommand(ctx: Context): Promise<void> {
 📖 使用说明：
 
 1️⃣ 发送视频链接
-直接发送支持平台的视频链接，Bot 会自动解析。
+直接发送支持平台的视频链接，Bot 会自动解析，并可以选择发送到 Aria2 下载。
 
 2️⃣ 支持的平台
 • X (Twitter) - 视频/图片推文
@@ -28,8 +28,7 @@ export async function helpCommand(ctx: Context): Promise<void> {
 
 ⚙️ Aria2 配置示例：
 • 局域网: http://192.168.1.1:6800/jsonrpc
-• 内网穿透: http://your-domain.com:6800/jsonrpc
-• OpenWrt: http://openwrt.lan:6800/jsonrpc
+• 公网: http://example.com:6800/jsonrpc
 
 ⚠️ 注意事项：
 • 需要系统安装 yt-dlp
